@@ -113,7 +113,7 @@ public class Pendu extends Application {
      * @return le panel contenant le titre du jeu
      */
     private Pane titre(){
-        BorderPane bp = new GridPane();
+        BorderPane bp = new BorderPane();
         Label lbl_titre = new Label("Jeu du Pendu");
         HBox hb = new HBox(10);
         this.boutonMaison.setGraphic(new ImageView(new Image("file:img/home.png")));

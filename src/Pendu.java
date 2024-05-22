@@ -10,13 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData ;
-import javafx.scene.control.ButtonType ;
+
 import java.util.List;
 import java.util.Arrays;
 import java.io.File;
@@ -56,7 +52,7 @@ public class Pendu extends Application {
     /**
      * le clavier qui sera géré par une classe à implémenter
      */
-    private Clavier clavier;
+    // private Clavier clavier;
     /**
      * le text qui indique le niveau de difficulté
      */
@@ -72,21 +68,21 @@ public class Pendu extends Application {
     /**
      * le bouton Paramètre / Engrenage
      */
-    private Button boutonParametres;
+    private Button boutonParametres = new Button();
     /**
      * le bouton Accueil / Maison
      */    
-    private Button boutonMaison;
+    private Button boutonMaison = new Button();
 
     /**
      * le bouton Info
      */    
-    private Button boutonInfo;
+    private Button boutonInfo = new Button();
     
     /**
      * le bouton qui permet de (lancer ou relancer une partie
      */ 
-    private Button bJouer;
+    private Button bJouer = new Button();
 
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono ...)
@@ -114,18 +110,37 @@ public class Pendu extends Application {
      */
     private Pane titre(){
         BorderPane bp = new BorderPane();
-        Label lbl_titre = new Label("Jeu du Pendu");
-        HBox hb = new HBox(10);
-        this.boutonMaison.setGraphic(new ImageView(new Image("file:img/home.png")));
-        this.boutonParametres.setGraphic(new ImageView(new Image("file:img/parametres.png")));
-        this.boutonInfo.setGraphic(new ImageView(new Image("file:img/info.png")));
+        bp.setPadding(new Insets(30));
+
+        Text titre = new Text("Jeu du Pendu");
+        titre.setFont(Font.font("Arial", 40));
+        
+        Image img1 = new Image("file:img/home.png");
+        ImageView view1 = new ImageView(img1);
+        view1.setFitHeight(30);
+        view1.setFitWidth(30);
+        this.boutonMaison.setGraphic(view1);
+        
+        Image img2 = new Image("file:img/parametres.png");
+        ImageView view2 = new ImageView(img2);
+        view2.setFitHeight(30);
+        view2.setFitWidth(30);
+        this.boutonParametres.setGraphic(view2);
+        
+        Image img3 = new Image("file:img/info.png");
+        ImageView view3 = new ImageView(img3);
+        view3.setFitHeight(30);
+        view3.setFitWidth(30);
+        this.boutonInfo.setGraphic(view3);
+        
+        bp.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE,null,null)));
+        bp.setLeft(titre);
+
+        HBox hb = new HBox(5);
         hb.getChildren().addAll(this.boutonMaison, this.boutonParametres, this.boutonInfo);
-        bp.setLeft(lbl_titre);
         bp.setRight(hb);
-        bp.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY,null,null)));
-        Pane banniere = new Pane();
-        banniere.getChildren().add(bp);
-        return banniere;
+
+        return bp;
     }
 
     // /**
@@ -169,7 +184,16 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil(){
-        // A implementer
+        GridPane gp = new GridPane();
+        gp.setPadding(new Insets(10));
+
+        this.bJouer.setText("Lancer une partie");
+        gp.add(this.bJouer, 0,0);
+
+        
+
+
+
     }
     
     public void modeJeu(){

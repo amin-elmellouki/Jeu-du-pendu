@@ -68,21 +68,21 @@ public class Pendu extends Application {
     /**
      * le bouton Paramètre / Engrenage
      */
-    private Button boutonParametres = new Button();
+    private Button boutonParametres;
     /**
      * le bouton Accueil / Maison
      */    
-    private Button boutonMaison = new Button();
+    private Button boutonMaison;
 
     /**
      * le bouton Info
      */    
-    private Button boutonInfo = new Button();
+    private Button boutonInfo;
     
     /**
      * le bouton qui permet de (lancer ou relancer une partie
      */ 
-    private Button bJouer = new Button();
+    private Button bJouer;
 
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono ...)
@@ -102,6 +102,7 @@ public class Pendu extends Application {
         BorderPane fenetre = new BorderPane();
         fenetre.setTop(this.titre());
         fenetre.setCenter(this.panelCentral);
+        this.panelCentral = new BorderPane();
         return new Scene(fenetre, 800, 1000);
     }
 
@@ -119,18 +120,21 @@ public class Pendu extends Application {
         ImageView view1 = new ImageView(img1);
         view1.setFitHeight(30);
         view1.setFitWidth(30);
+        this.boutonMaison = new Button();
         this.boutonMaison.setGraphic(view1);
         
         Image img2 = new Image("file:img/parametres.png");
         ImageView view2 = new ImageView(img2);
         view2.setFitHeight(30);
         view2.setFitWidth(30);
+        this.boutonParametres = new Button();
         this.boutonParametres.setGraphic(view2);
         
         Image img3 = new Image("file:img/info.png");
         ImageView view3 = new ImageView(img3);
         view3.setFitHeight(30);
         view3.setFitWidth(30);
+        this.boutonInfo = new Button();
         this.boutonInfo.setGraphic(view3);
         
         bp.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE,null,null)));
@@ -184,11 +188,10 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil(){
-        GridPane gp = new GridPane();
-        gp.setPadding(new Insets(10));
+        VBox vb = new VBox(15);
+        vb.setPadding(new Insets(10));
 
-        this.bJouer.setText("Lancer une partie");
-        gp.add(this.bJouer, 0,0);
+        this.bJouer = new Button();
 
         
 

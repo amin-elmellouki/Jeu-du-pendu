@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -91,6 +92,7 @@ public class Pendu extends Application {
     public void init() {
         this.modelePendu = new MotMystere("/usr/share/dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
+        this.panelCentral = new BorderPane();
         this.chargerImages("./img");
         // A terminer d'implementer
     }
@@ -102,7 +104,6 @@ public class Pendu extends Application {
         BorderPane fenetre = new BorderPane();
         fenetre.setTop(this.titre());
         fenetre.setCenter(this.panelCentral);
-        this.panelCentral = new BorderPane();
         return new Scene(fenetre, 800, 1000);
     }
 
@@ -122,6 +123,9 @@ public class Pendu extends Application {
         view1.setFitWidth(30);
         this.boutonMaison = new Button();
         this.boutonMaison.setGraphic(view1);
+        Tooltip tlp_maison = new Tooltip("Appuyez pour revenir à l'accueil");
+        tlp_maison.setShowDelay(Duration.seconds(0));
+        this.boutonMaison.setTooltip(tlp_maison);
         
         Image img2 = new Image("file:img/parametres.png");
         ImageView view2 = new ImageView(img2);
@@ -129,6 +133,9 @@ public class Pendu extends Application {
         view2.setFitWidth(30);
         this.boutonParametres = new Button();
         this.boutonParametres.setGraphic(view2);
+        Tooltip tlp_parametre = new Tooltip("Appuyez pour consulter les paramètres du jeu");
+        tlp_parametre.setShowDelay(Duration.seconds(0));
+        this.boutonParametres.setTooltip(tlp_parametre);
         
         Image img3 = new Image("file:img/info.png");
         ImageView view3 = new ImageView(img3);
@@ -136,6 +143,9 @@ public class Pendu extends Application {
         view3.setFitWidth(30);
         this.boutonInfo = new Button();
         this.boutonInfo.setGraphic(view3);
+        Tooltip tlp_info = new Tooltip("Appuyez pour consulter les informations du jeu");
+        tlp_info.setShowDelay(Duration.seconds(0));
+        this.boutonInfo.setTooltip(tlp_info);
         
         bp.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE,null,null)));
         bp.setLeft(titre);
@@ -151,7 +161,7 @@ public class Pendu extends Application {
      // * @return le panel du chronomètre
      // */
     // private TitledPane leChrono(){
-        // A implementer
+        // A implementstage.setScene(this.laScene());er
         // TitledPane res = new TitledPane();
         // return res;
     // }
@@ -187,17 +197,33 @@ public class Pendu extends Application {
         }
     }
 
-    public void modeAccueil(){
-        VBox vb = new VBox(15);
-        vb.setPadding(new Insets(10));
-
-        this.bJouer = new Button();
-
+    public void modeAccueil() {
+        VBox accueil = new VBox(15);
+        accueil.setPadding(new Insets(15));
+        this.bJouer = new Button("Lancer une partie");
+    
+        VBox vb_tltdPane = new VBox(10);
+    
+        RadioButton rdb_facile = new RadioButton("Facile");
+        RadioButton rdb_medium = new RadioButton("Médium");
+        RadioButton rdb_difficile = new RadioButton("Difficile");
+        RadioButton rdb_expert = new RadioButton("Expert");
         
-
-
-
+        ToggleGroup tgp_rdbtn = new ToggleGroup();
+        rdb_facile.setToggleGroup(tgp_rdbtn);
+        rdb_medium.setToggleGroup(tgp_rdbtn);
+        rdb_difficile.setToggleGroup(tgp_rdbtn);
+        rdb_expert.setToggleGroup(tgp_rdbtn);
+    
+        vb_tltdPane.getChildren().addAll(rdb_facile, rdb_medium, rdb_difficile, rdb_expert);
+        
+        TitledPane tp = new TitledPane("Niveau de difficulté", vb_tltdPane);
+        tp.setCollapsible(false);
+    
+        accueil.getChildren().addAll(bJouer, tp);
+        this.panelCentral.setCenter(accueil);
     }
+    
     
     public void modeJeu(){
         // A implementer

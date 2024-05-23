@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.geometry.Pos;
@@ -126,6 +127,7 @@ public class Pendu extends Application {
         Tooltip tlp_maison = new Tooltip("Appuyez pour revenir à l'accueil");
         tlp_maison.setShowDelay(Duration.seconds(0));
         this.boutonMaison.setTooltip(tlp_maison);
+        this.boutonMaison.setOnAction(new RetourAccueil(null, this));
         
         Image img2 = new Image("file:img/parametres.png");
         ImageView view2 = new ImageView(img2);
@@ -198,6 +200,7 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil() {
+        this.boutonMaison.setDisable(true);
         VBox accueil = new VBox(15);
         accueil.setPadding(new Insets(15));
         this.bJouer = new Button("Lancer une partie");
@@ -226,7 +229,13 @@ public class Pendu extends Application {
     
     
     public void modeJeu(){
-        // A implementer
+        HBox hb_jeu = new HBox(15);
+        hb_jeu.setPadding(new Insets(15));
+
+        VBox vb_gauche = new VBox(15);
+        Text mot_mystere = new Text("***MALI*E*");
+        mot_mystere.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        
     }
     
     public void modeParametres(){

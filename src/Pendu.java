@@ -165,6 +165,7 @@ public class Pendu extends Application {
     private TitledPane leChrono(){
         this.chrono = new Chronometre();
         TitledPane res = new TitledPane("Chronomètre", this.chrono);
+        res.setCollapsible(false);
         return res;
     }
 
@@ -190,6 +191,14 @@ public class Pendu extends Application {
 
         this.leNiveau = new Text("Niveau: " +  this.niveaux.get(this.modelePendu.getNiveau()));
         TitledPane tlp_chrono = this.leChrono();
+        Button btn_nv_mot = new Button("Nouveau mot");
+        btn_nv_mot.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
+        vb_droite.getChildren().addAll(this.leNiveau, tlp_chrono, btn_nv_mot);
+
+        bp_jeu.setLeft(vb_gauche);
+        bp_jeu.setRight(vb_droite);
+        
+        return bp_jeu;
     }
 
     /**
@@ -198,7 +207,9 @@ public class Pendu extends Application {
     private Pane fenetreAccueil(){
         VBox accueil = new VBox(15);
         accueil.setPadding(new Insets(15));
+
         this.bJouer = new Button("Lancer une partie");
+        this.bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
     
         VBox vb_tltdPane = new VBox(10);
     
@@ -250,17 +261,38 @@ public class Pendu extends Application {
         // A implémenter
     }
 
+    /**
+     * Vérifie si une partie est en cours.
+     * @return true si une partie est en cours, false sinon
+     */
+    public boolean partieEnCours() {
+        return modelePendu.getNbEssais() > 0 && !modelePendu.gagne() && !modelePendu.perdu();
+    }
+
     /** lance une partie */
     public void lancePartie(){
-        // A implementer
+        modeJeu();
     }
 
     /**
      * raffraichit l'affichage selon les données du modèle
      */
-    public void majAffichage(){
-        // A implementer
+    public void majAffichage() {
+        // Mettre à jour le mot crypté
+        this.motCrypte.setText(this.modelePendu.getMotCrypte());
+    
+        // Mettre à jour l'image du pendu
+        int nbErreurs = this.modelePendu.getNbEssais();
+        this.dessin.setImage(this.lesImages.get(nbErreurs));
+    
+        // Mettre à jour la barre de progression
+        double progress = (double) nbErreurs / this.modelePendu.getNbErreursMax();
+        this.pg.setProgress(progress);
+    
+        // Mettre à jour le niveau de difficulté
+        this.leNiveau.setText("Niveau: " + this.niveaux.get(this.modelePendu.getNiveau()));
     }
+    
 
     /**
      * accesseur du chronomètre (pour les controleur du jeu)

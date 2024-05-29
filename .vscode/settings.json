@@ -9,6 +9,7 @@
         "/usr/share/openjfx/lib/javafx.base.jar"
     ],
     "java.project.sourcePaths": [
-        "src"
+        "src",
+        "img"
     ]
 }

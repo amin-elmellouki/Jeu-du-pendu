@@ -159,48 +159,43 @@ public class Pendu extends Application {
         return bp;
     }
 
-    // /**
-     // * @return le panel du chronomètre
-     // */
-    // private TitledPane leChrono(){
-        // A implementstage.setScene(this.laScene());er
-        // TitledPane res = new TitledPane();
-        // return res;
-    // }
-
-    // /**
-     // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-     // *         de progression et le clavier
-     // */
-    // private Pane fenetreJeu(){
-        // A implementer
-        // Pane res = new Pane();
-        // return res;
-    // }
-
-    // /**
-     // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
-     // */
-    // private Pane fenetreAccueil(){
-        // A implementer    
-        // Pane res = new Pane();
-        // return res;
-    // }
-
     /**
-     * charge les images à afficher en fonction des erreurs
-     * @param repertoire répertoire où se trouvent les images
+     * @return le panel du chronomètre
      */
-    private void chargerImages(String repertoire){
-        for (int i=0; i<this.modelePendu.getNbErreursMax()+1; i++){
-            File file = new File(repertoire+"/pendu"+i+".png");
-            System.out.println(file.toURI().toString());
-            this.lesImages.add(new Image(file.toURI().toString()));
-        }
+    private TitledPane leChrono(){
+        this.chrono = new Chronometre();
+        TitledPane res = new TitledPane("Chronomètre", this.chrono);
+        return res;
     }
 
-    public void modeAccueil() {
-        this.boutonMaison.setDisable(true);
+    /**
+     * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
+     *         de progression et le clavier
+     */
+    private Pane fenetreJeu(){
+        BorderPane bp_jeu = new BorderPane();
+
+        VBox vb_gauche = new VBox(15);
+        vb_gauche.setPadding(new Insets(15));
+
+        this.motCrypte = new Text(this.modelePendu.getMotCrypte());
+        this.dessin = new ImageView(this.lesImages.get(0));
+        this.pg = new ProgressBar();
+        this.pg.setProgress(0);
+        Clavier clavier_jeu = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ", new ControleurLettres(this.modelePendu,this), 8);
+        vb_gauche.getChildren().addAll(this.motCrypte, this.dessin, this.pg, clavier_jeu);
+
+        VBox vb_droite = new VBox(15);
+        vb_droite.setPadding(new Insets(15));
+
+        this.leNiveau = new Text("Niveau: " +  this.niveaux.get(this.modelePendu.getNiveau()));
+        TitledPane tlp_chrono = this.leChrono();
+    }
+
+    /**
+     * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
+     */
+    private Pane fenetreAccueil(){
         VBox accueil = new VBox(15);
         accueil.setPadding(new Insets(15));
         this.bJouer = new Button("Lancer une partie");
@@ -224,18 +219,31 @@ public class Pendu extends Application {
         tp.setCollapsible(false);
     
         accueil.getChildren().addAll(bJouer, tp);
-        this.panelCentral.setCenter(accueil);
+        return accueil;
+    }
+
+    /**
+     * charge les images à afficher en fonction des erreurs
+     * @param repertoire répertoire où se trouvent les images
+     */
+    private void chargerImages(String repertoire){
+        for (int i=0; i<this.modelePendu.getNbErreursMax()+1; i++){
+            File file = new File(repertoire+"/pendu"+i+".png");
+            System.out.println(file.toURI().toString());
+            this.lesImages.add(new Image(file.toURI().toString()));
+        }
+    }
+
+    public void modeAccueil() {
+        this.panelCentral.setCenter(fenetreAccueil());
+        this.boutonMaison.setDisable(true);
+        this.boutonParametres.setDisable(false);
     }
     
-    
     public void modeJeu(){
-        HBox hb_jeu = new HBox(15);
-        hb_jeu.setPadding(new Insets(15));
-
-        VBox vb_gauche = new VBox(15);
-        Text mot_mystere = new Text("***MALI*E*");
-        mot_mystere.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        
+        this.panelCentral.setCenter(fenetreJeu());
+        this.boutonMaison.setDisable(false);
+        this.boutonParametres.setDisable(true);
     }
     
     public void modeParametres(){

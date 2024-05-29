@@ -225,24 +225,24 @@ public class MotMystere {
      * @return le nombre de fois où la lettre apparait dans le mot à trouver
      */
     public int essaiLettre(char lettre){
-        int nbNouvelles = 0;
+        int nbOccurence = 0;
         char[] aux = this.motCrypte.toCharArray();
         for (int i=0; i<this.motATrouver.length(); i++){
             if (this.motATrouver.charAt(i) == lettre && this.motCrypte.charAt(i) == '*'){
-                nbNouvelles += 1;
+                nbOccurence += 1;
                 aux[i] = lettre;
             }
         }
         this.motCrypte = String.valueOf(aux);
-        this.nbLettresRestantes -= nbNouvelles;
+        this.nbLettresRestantes -= nbOccurence;
         this.lettresEssayees.add(lettre+"");
         // Le nombre d'essais augmente de 1
         this.nbEssais += 1;
         // Si aucune lettre n'a été trouvée, le nombre d'erreurs restante diminue de 1
-        if (nbNouvelles == 0){
+        if (nbOccurence == 0){
             this.nbErreursRestantes-=1;
         }
-        return nbNouvelles;
+        return nbOccurence;
     }
 
     /**

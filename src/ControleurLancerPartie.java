@@ -1,8 +1,6 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-
 import java.util.Optional;
 
 /**
@@ -33,15 +31,15 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
-        if (vuePendu.partieEnCours()) {
-            // Demandez la confirmation de l'utilisateur pour interrompre la partie en cours
-            Optional<ButtonType> reponse = vuePendu.popUpPartieEnCours().showAndWait();
-            if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)) {
-                vuePendu.lancePartie();
-            }
-        } else {
-            // Si aucune partie n'est en cours, lancez directement une nouvelle partie
-            vuePendu.lancePartie();
+        // A implémenter
+    
+        Optional<ButtonType> reponse = this.vuePendu.popUpPartieEnCours().showAndWait(); // on lance la fenêtre popup et on attends la réponse
+        // si la réponse est oui
+        if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
+            System.out.println("Ok !");
+        }
+        else{
+            System.out.println("D'ac !");
         }
     }
 }

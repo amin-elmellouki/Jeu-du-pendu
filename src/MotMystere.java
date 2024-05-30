@@ -47,7 +47,7 @@ public class MotMystere {
     /**
      * le nombre total de tentatives autorisées
      */
-    private int nbEerreursMax;
+    private int nbErreursMax;
     /**
      * dictionnaire dans lequel on choisit les mots
      */
@@ -123,7 +123,7 @@ public class MotMystere {
             motCrypte += this.motATrouver.charAt(motATrouver.length()-1);
             // dernière lettre cachée
         }
-        this.nbEerreursMax = nbErreursMax;
+        this.nbErreursMax = nbErreursMax;
          this.nbErreursRestantes = nbErreursMax;
     }
 
@@ -145,14 +145,14 @@ public class MotMystere {
      * @param motATrouver le nouveau mot à trouver
      */
     public void setMotATrouver(String motATrouver) {
-        this.initMotMystere(motATrouver, this.niveau, this.nbEerreursMax);
+        this.initMotMystere(motATrouver, this.niveau, this.nbErreursMax);
     }
 
     /**
      * Réinitialise le jeu avec un nouveau mot à trouver choisi au hasard dans le dictionnaire
      */
     public void setMotATrouver() {
-        this.initMotMystere(this.dict.choisirMot(), this.niveau, this.nbEerreursMax);
+        this.initMotMystere(this.dict.choisirMot(), this.niveau, this.nbErreursMax);
     }
 
     /**
@@ -195,7 +195,7 @@ public class MotMystere {
      * @return le nombre total de tentatives autorisées
      */
     public int getNbErreursMax(){
-        return this.nbEerreursMax;
+        return this.nbErreursMax;
     }
 
     /**

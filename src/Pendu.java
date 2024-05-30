@@ -95,6 +95,7 @@ public class Pendu extends Application {
         this.lesImages = new ArrayList<Image>();
         this.panelCentral = new BorderPane();
         this.chargerImages("./img");
+        this.chrono = new Chronometre();
         // A terminer d'implementer
     }
 
@@ -248,25 +249,15 @@ public class Pendu extends Application {
     public void modeAccueil() {
         this.panelCentral.setCenter(fenetreAccueil());
         this.boutonMaison.setDisable(true);
-        this.boutonParametres.setDisable(false);
     }
     
     public void modeJeu(){
         this.panelCentral.setCenter(fenetreJeu());
-        this.boutonMaison.setDisable(false);
         this.boutonParametres.setDisable(true);
     }
     
     public void modeParametres(){
         // A implémenter
-    }
-
-    /**
-     * Vérifie si une partie est en cours.
-     * @return true si une partie est en cours, false sinon
-     */
-    public boolean partieEnCours() {
-        return modelePendu.getNbEssais() > 0 && !modelePendu.gagne() && !modelePendu.perdu();
     }
 
     /** lance une partie */
@@ -278,21 +269,8 @@ public class Pendu extends Application {
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
-        // Mettre à jour le mot crypté
-        this.motCrypte.setText(this.modelePendu.getMotCrypte());
-    
-        // Mettre à jour l'image du pendu
-        int nbErreurs = this.modelePendu.getNbEssais();
-        this.dessin.setImage(this.lesImages.get(nbErreurs));
-    
-        // Mettre à jour la barre de progression
-        double progress = (double) nbErreurs / this.modelePendu.getNbErreursMax();
-        this.pg.setProgress(progress);
-    
-        // Mettre à jour le niveau de difficulté
-        this.leNiveau.setText("Niveau: " + this.niveaux.get(this.modelePendu.getNiveau()));
+
     }
-    
 
     /**
      * accesseur du chronomètre (pour les controleur du jeu)

@@ -54,7 +54,7 @@ public class Pendu extends Application {
     /**
      * le clavier qui sera géré par une classe à implémenter
      */
-    // private Clavier clavier;
+    private Clavier clavier;
     /**
      * le text qui indique le niveau de difficulté
      */
@@ -96,7 +96,7 @@ public class Pendu extends Application {
         this.panelCentral = new BorderPane();
         this.chargerImages("./img");
         this.chrono = new Chronometre();
-        // A terminer d'implementer
+        this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
     }
 
     /**
@@ -184,8 +184,8 @@ public class Pendu extends Application {
         this.dessin = new ImageView(this.lesImages.get(0));
         this.pg = new ProgressBar();
         this.pg.setProgress(0);
-        Clavier clavier_jeu = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ", new ControleurLettres(this.modelePendu,this), 8);
-        vb_gauche.getChildren().addAll(this.motCrypte, this.dessin, this.pg, clavier_jeu);
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ", new ControleurLettres(this.modelePendu,this), 8);
+        vb_gauche.getChildren().addAll(this.motCrypte, this.dessin, this.pg, clavier);
 
         VBox vb_droite = new VBox(15);
         vb_droite.setPadding(new Insets(15));
@@ -249,11 +249,13 @@ public class Pendu extends Application {
     public void modeAccueil() {
         this.panelCentral.setCenter(fenetreAccueil());
         this.boutonMaison.setDisable(true);
+        this.boutonParametres.setDisable(false);
     }
     
     public void modeJeu(){
         this.panelCentral.setCenter(fenetreJeu());
         this.boutonParametres.setDisable(true);
+        this.boutonMaison.setDisable(false);
     }
     
     public void modeParametres(){
@@ -263,13 +265,33 @@ public class Pendu extends Application {
     /** lance une partie */
     public void lancePartie(){
         modeJeu();
+        this.modelePendu.setMotATrouver();
+        this.chrono.resetTime();
+        this.chrono.start();
+        this.majAffichage();
     }
 
     /**
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
+        this.motCrypte.setText(this.modelePendu.getMotCrypte());
+        this.pg.setProgress((double) (this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants() / this.modelePendu.getNbErreursMax()));
+        double progress = (double) (modelePendu.getNbErreursMax() - modelePendu.getNbErreursRestants()) / modelePendu.getNbErreursMax();
+        pg.setProgress(progress);
 
+        int nbErreursRestantes = modelePendu.getNbErreursRestants();
+        if (nbErreursRestantes >= 0 && nbErreursRestantes < lesImages.size()) {
+        int indiceImage = lesImages.size() - nbErreursRestantes - 1;
+        dessin.setImage(lesImages.get(indiceImage));
+        }
+        if (modelePendu.gagne()) {
+            Alert alert = popUpMessageGagne();
+            alert.showAndWait();
+        } else if (modelePendu.perdu()) {
+            Alert alert = popUpMessagePerdu();
+            alert.showAndWait();
+        }
     }
 
     /**

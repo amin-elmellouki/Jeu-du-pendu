@@ -35,6 +35,8 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
     public void handle(ActionEvent actionEvent) {
         Button btn = (Button) actionEvent.getSource();
         int nbOccurences = this.modelePendu.essaiLettre(btn.getText().charAt(0));
+        btn.setDisable(true);
+        this.vuePendu.majAffichage();
 
         
     }

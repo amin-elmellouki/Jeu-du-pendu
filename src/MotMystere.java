@@ -157,7 +157,7 @@ public class MotMystere {
 
     /**
      * change le niveau de jeu (n'a pas d'effet en cours de partie)
-     * @param niveau le nouveau niveu de jeu
+     * @param niveau le nouveau niveau de jeu
      */
     public void setNiveau(int niveau){
         this.niveau = niveau;

@@ -31,18 +31,20 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
-        if(this.modelePendu.getNbEssais() == 0 || this.modelePendu.perdu() || this.modelePendu.perdu()){
-            this.vuePendu.lancePartie();
-        }
-        Optional<ButtonType> reponse = this.vuePendu.popUpPartieEnCours().showAndWait(); // on lance la fenêtre popup et on attends la réponse
-        // si la réponse est oui
+        if (vuePendu.partieEstEnCours()) {
+            Optional<ButtonType> reponse = vuePendu.popUpPartieEnCours().showAndWait();
+            
         if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
-            System.out.println("Ok !");
-            this.vuePendu.lancePartie();
-
+            vuePendu.lancePartie();
+            System.out.println("*Voix de forain* C'est reparti pour un tour !");
+        } 
+        else {
+            System.out.println("Ok on fait rien chef !");
         }
-        else{
-            System.out.println("D'ac !");
+        }
+        else {
+        vuePendu.lancePartie();
         }
     }
+
 }

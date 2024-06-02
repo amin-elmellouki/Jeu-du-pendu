@@ -1,7 +1,6 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.geometry.Pos;
@@ -12,11 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.control.ButtonBar.ButtonData ;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Arrays;
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +43,7 @@ public class Pendu extends Application {
     /**
      * le mot à trouver avec les lettres déjà trouvé
      */
-    private Text motCrypte;
+    private Label motCrypte;
     /**
      * la barre de progression qui indique le nombre de tentatives
      */
@@ -59,7 +55,7 @@ public class Pendu extends Application {
     /**
      * le text qui indique le niveau de difficulté
      */
-    private Text leNiveau;
+    private Label leNiveau;
     /**
      * le chronomètre qui sera géré par une clasee à implémenter
      */
@@ -93,6 +89,11 @@ public class Pendu extends Application {
     private boolean partieEnCours;
 
     /**
+     * Chaine de caractères indiquant le thème sélectionné (clair ou sombre)
+     */
+    private String themeCourant = "clair";
+    
+    /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono ...)
      */
     @Override
@@ -107,7 +108,7 @@ public class Pendu extends Application {
     }
 
     /**
-     * @return  le graphe de scène de la vue à partir de methodes précédantes
+     * @return le graphe de scène de la vue à partir de methodes précédantes
      */
     private Scene laScene(){
         BorderPane fenetre = new BorderPane();
@@ -122,10 +123,13 @@ public class Pendu extends Application {
     private Pane titre(){
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(30));
-
+    
+        // Titre
         Text titre = new Text("Jeu du Pendu");
         titre.setFont(Font.font("Arial", 40));
-        
+        titre.setStyle("-fx-font-weight: bold");
+    
+        // Bouton "Accueil"
         Image img1 = new Image("file:img/home.png");
         ImageView view1 = new ImageView(img1);
         view1.setFitHeight(30);
@@ -136,17 +140,20 @@ public class Pendu extends Application {
         tlp_maison.setShowDelay(Duration.seconds(0));
         this.boutonMaison.setTooltip(tlp_maison);
         this.boutonMaison.setOnAction(new RetourAccueil(null, this));
-        
+    
+        // Bouton "Paramètres"
         Image img2 = new Image("file:img/parametres.png");
         ImageView view2 = new ImageView(img2);
         view2.setFitHeight(30);
         view2.setFitWidth(30);
         this.boutonParametres = new Button();
         this.boutonParametres.setGraphic(view2);
+        this.boutonParametres.setOnAction(new ControleurParametres(this));
         Tooltip tlp_parametre = new Tooltip("Appuyez pour consulter les paramètres du jeu");
         tlp_parametre.setShowDelay(Duration.seconds(0));
         this.boutonParametres.setTooltip(tlp_parametre);
-        
+    
+        // Bouton "Info"
         Image img3 = new Image("file:img/info.png");
         ImageView view3 = new ImageView(img3);
         view3.setFitHeight(30);
@@ -157,17 +164,19 @@ public class Pendu extends Application {
         tlp_info.setShowDelay(Duration.seconds(0));
         this.boutonInfo.setTooltip(tlp_info);
         this.boutonInfo.setOnAction(new ControleurInfos(this));
-        
+    
+        // Couleur de la bannière
         bp.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE,null,null)));
         bp.setLeft(titre);
-
+    
+        // Hbox pour les trois boutons
         HBox hb = new HBox(5);
         hb.getChildren().addAll(this.boutonMaison, this.boutonParametres, this.boutonInfo);
         bp.setRight(hb);
-
+    
         return bp;
     }
-
+    
     /**
      * @return le panel du chronomètre
      */
@@ -181,37 +190,37 @@ public class Pendu extends Application {
      * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
      *         de progression et le clavier
      */
-    private Pane fenetreJeu(){
+    private Pane fenetreJeu() {
         BorderPane bp_jeu = new BorderPane();
-
+    
+        // Partie gauche de la fenêtre de jeu
         VBox vb_gauche = new VBox(15);
         vb_gauche.setPadding(new Insets(15));
-
-        this.motCrypte = new Text(this.modelePendu.getMotCrypte());
-        this.motCrypte.setFont(Font.font("Arial", 20));
-        this.dessin = new ImageView(this.lesImages.get(0));
-        this.pg = new ProgressBar();
-        this.pg.setProgress(0);
-        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu,this), 9);
-        vb_gauche.getChildren().addAll(this.motCrypte, this.dessin, this.pg, clavier);
+        motCrypte = new Label(modelePendu.getMotCrypte());
+        motCrypte.setFont(Font.font("Arial", 20));
+        dessin = new ImageView(lesImages.get(0));
+        pg = new ProgressBar();
+        pg.setProgress(0);
+        clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(modelePendu, this), 9);
+        vb_gauche.getChildren().addAll(motCrypte, dessin, pg, clavier);
         vb_gauche.setAlignment(Pos.BASELINE_CENTER);
-        
-
+    
+        // Partie droite de la fenêtre de jeu
         VBox vb_droite = new VBox(15);
         vb_droite.setPadding(new Insets(15));
-
-        this.leNiveau = new Text("Niveau: " +  this.niveaux.get(this.modelePendu.getNiveau()));
-        this.leNiveau.setFont(Font.font("Arial", 20));
-        TitledPane tlp_chrono = this.leChrono();
+        leNiveau = new Label("Niveau: " + niveaux.get(modelePendu.getNiveau()));
+        leNiveau.setFont(Font.font("Arial", 20));
+        TitledPane tlp_chrono = leChrono();
         Button btn_nv_mot = new Button("Nouveau mot");
-        btn_nv_mot.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
-        vb_droite.getChildren().addAll(this.leNiveau, tlp_chrono, btn_nv_mot);
-
+        btn_nv_mot.setOnAction(new ControleurLancerPartie(modelePendu, this));
+        vb_droite.getChildren().addAll(leNiveau, tlp_chrono, btn_nv_mot);
+    
         bp_jeu.setLeft(vb_gauche);
         bp_jeu.setRight(vb_droite);
-        
+    
         return bp_jeu;
     }
+    
 
     /**
      * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
@@ -220,29 +229,30 @@ public class Pendu extends Application {
         VBox accueil = new VBox(15);
         accueil.setPadding(new Insets(15));
 
+        // Bouton pour lancer une partie
         this.bJouer = new Button("Lancer une partie");
         this.bJouer.setOnAction(new ControleurLancerPartie(this.modelePendu, this));
-    
-        VBox vb_tltdPane = new VBox(10);
         
         ToggleGroup tgp_rdbtn = new ToggleGroup();
 
         RadioButton rdb_facile = new RadioButton(niveaux.get(0));
         rdb_facile.setOnAction(new ControleurNiveau(this.modelePendu));
         rdb_facile.setToggleGroup(tgp_rdbtn);
-
+        
         RadioButton rdb_medium = new RadioButton(niveaux.get(1));
         rdb_medium.setOnAction(new ControleurNiveau(this.modelePendu));
         rdb_medium.setToggleGroup(tgp_rdbtn);
-
+        
         RadioButton rdb_difficile = new RadioButton(niveaux.get(2));
         rdb_difficile.setOnAction(new ControleurNiveau(this.modelePendu));
         rdb_difficile.setToggleGroup(tgp_rdbtn);
-
+        
         RadioButton rdb_expert = new RadioButton(niveaux.get(3));
         rdb_expert.setOnAction(new ControleurNiveau(this.modelePendu));
         rdb_expert.setToggleGroup(tgp_rdbtn);
         
+        // Vbox pour le tiltedPane
+        VBox vb_tltdPane = new VBox(10);
         vb_tltdPane.getChildren().addAll(rdb_facile, rdb_medium, rdb_difficile, rdb_expert);
         
         TitledPane tp = new TitledPane("Niveau de difficulté", vb_tltdPane);
@@ -255,9 +265,62 @@ public class Pendu extends Application {
     /**
      * @return la page des paramètres
      */
-    // private Pane fenetreParamètres(){
+    private Pane fenetreParamètres(){
+        VBox vb_parametres = new VBox(15);
+        vb_parametres.setPadding(new Insets(15));
+        
+        Label titre = new Label("Paramètres du jeu");
+        titre.setFont(Font.font("Arial", 20));
+        titre.setStyle("-fx-font-weight: bold");
 
-    // }
+        GridPane gp_parametres = new GridPane();
+        gp_parametres.setPadding(new Insets(15));
+        gp_parametres.setHgap(20);
+
+        Label choix_theme = new Label("Choix du thème: ");
+        choix_theme.setStyle("-fx-font-weight: bold");
+        choix_theme.setFont(Font.font("Arial", 15));
+        gp_parametres.add(choix_theme, 0, 0);
+
+        ToggleGroup tgp_parametres = new ToggleGroup();
+
+        RadioButton theme_clair = new RadioButton("Clair");
+        theme_clair.setToggleGroup(tgp_parametres);
+        theme_clair.setOnAction(new ControleurTheme(this, "clair"));
+        gp_parametres.add(theme_clair, 1, 0);
+
+        RadioButton theme_sombre = new RadioButton("Sombre");
+        theme_sombre.setToggleGroup(tgp_parametres);
+        theme_sombre.setOnAction(new ControleurTheme(this, "sombre"));
+        gp_parametres.add(theme_sombre, 2, 0);
+
+        if (this.themeCourant.equals("clair")) {
+            theme_clair.setSelected(true);
+        } else {
+            theme_sombre.setSelected(true);
+        }
+
+        vb_parametres.getChildren().addAll(titre, gp_parametres);
+
+        return vb_parametres;
+    }
+
+    /**
+     * Permet de changer le thème du jeu (clair ou sombre)
+     * @param theme Une chaîne de caractère indiquant le thème choisi (clair ou sombre)
+     */
+    public void setThemeJeu(String theme){
+        Scene page = this.panelCentral.getScene();
+        this.themeCourant = theme;
+        if(theme.equals("clair")){
+            page.getStylesheets().remove("themeSombre.css");
+            page.getStylesheets().add("themeClair.css");
+        }
+        else{
+            page.getStylesheets().remove("themeClair.css");
+            page.getStylesheets().add("themeSombre.css");
+        }
+    }
 
     /**
      * charge les images à afficher en fonction des erreurs
@@ -271,23 +334,36 @@ public class Pendu extends Application {
         }
     }
 
+    /**
+     * Affiche la page d'accueil
+     */
     public void modeAccueil() {
         this.panelCentral.setCenter(fenetreAccueil());
         this.boutonMaison.setDisable(true);
         this.boutonParametres.setDisable(false);
     }
     
+    /**
+    * Affiche la page de jeu
+    */
     public void modeJeu(){
         this.panelCentral.setCenter(fenetreJeu());
         this.boutonParametres.setDisable(true);
         this.boutonMaison.setDisable(false);
     }
     
+    /**
+    * Affiche la page des paramètres
+    */
     public void modeParametres(){
-        // A implémenter
+        this.panelCentral.setCenter(fenetreParamètres());
+        this.boutonParametres.setDisable(true);
+        this.boutonMaison.setDisable(false);
     }
 
-    /** lance une partie */
+    /** 
+     * lance une partie 
+     */
     public void lancePartie(){
         modeJeu();
         this.modelePendu.setMotATrouver();
@@ -339,12 +415,21 @@ public class Pendu extends Application {
         return this.chrono;
     }
 
+    /**
+     * Affiche un message d'alerte indiquant qu'une partie est en cours
+     * @return Le message d'alerte
+     */
     public Alert popUpPartieEnCours(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"La partie est en cours!\n Etes-vous sûr de l'interrompre ?", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Attention");
+        alert.setHeaderText("ATTENTION !");
         return alert;
     }
 
+     /**
+     * Affiche un message expliquant les règles du jeu
+     * @return Le message d'information
+     */
     public Alert popUpReglesDuJeu(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION, 
         "Voici comment jouer au Pendu :\n\n" +
@@ -353,30 +438,35 @@ public class Pendu extends Application {
         "3. Le pendu: pour chaque erreur, une partie d'une image représentant un pendu est dessinée. Le but est de deviner le mot mystère avant que le pendu ne soit complet.\n\n" +
         "4. Les erreurs: si une lettre choisie n'est pas dans le mot mystère, cela compte comme une erreur et rapproche du pendu.\n\n" +
         "5. La victoire ou la défaite: gagnez en devinant le mot mystère avant que le pendu ne soit complet et perdez si le pendu est complet avant d'avoir deviné le mot.");
+        alert.setWidth(600);
         alert.setTitle("Règle du jeu");
         alert.setHeaderText("Bienvenue au jeu du pendu !");
         return alert;
     }
     
+    /**
+    * Affiche un message si la partie est gagnée
+    * @return Le message d'information
+    */
     public Alert popUpMessageGagne(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"VOUS ETES UN VERITABLE DICTIONNAIRE SUR PATTES !\n Voulez-vous relancer une partie ?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,"VOUS ETES UN VERITABLE DICTIONNAIRE SUR PATTES !\n" + "Cliquez sur le bouton *Nouveau Mot* pour relancer une partie.");
+        alert.setWidth(600);
         alert.setTitle("Partie gagnée");
         alert.setHeaderText("FELICITATIONS !");
-        Optional<ButtonType> reponse = alert.showAndWait();
-        if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
-            lancePartie();
-        }
+        alert.showAndWait();
         return alert;
     }
     
+     /**
+    * Affiche un message si la partie est perdue
+    * @return Le message d'information
+    */
     public Alert popUpMessagePerdu(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Le mot était: " + this.modelePendu.getMotATrouve() + " vous ferez mieux la prochaine fois :)\n Voulez-vous relancer une partie ?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Le mot était: " + this.modelePendu.getMotATrouve() + " vous ferez mieux la prochaine fois :)\n" +"Cliquez sur le bouton *Nouveau Mot* pour relancer une partie.");
+        alert.setWidth(600);
         alert.setTitle("Partie perdue");
         alert.setHeaderText("GAME OVER X_X");
-        Optional<ButtonType> reponse = alert.showAndWait();
-        if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
-            lancePartie();
-        }
+        alert.showAndWait();
         return alert;
     }
 
@@ -387,7 +477,9 @@ public class Pendu extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        stage.setScene(this.laScene());
+        Scene scene = this.laScene();
+        scene.getStylesheets().add("themeClair.css");
+        stage.setScene(scene);
         this.modeAccueil();
         stage.show();
     }

@@ -1,0 +1,13 @@
+.root { 
+    -fx-focus-color: royalblue;
+    -fx-base: #000000;
+    -fx-control-inner-background: #000000;
+}
+
+.label{
+    -fx-text-fill: rgb(255, 255, 255);
+}
+
+.button:hover{
+    -fx-text-fill: rgb(255, 255, 255);
+}

@@ -1,5 +1,7 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
@@ -29,22 +31,22 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
      * L'action consiste à recommencer une partie. Il faut vérifier qu'il n'y a pas une partie en cours
      * @param actionEvent l'événement action
      */
-    @Override
+   @Override
     public void handle(ActionEvent actionEvent) {
         if (vuePendu.partieEstEnCours()) {
-            Optional<ButtonType> reponse = vuePendu.popUpPartieEnCours().showAndWait();
-            
-        if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
+            Alert alert = vuePendu.popUpPartieEnCours();
+            alert.getButtonTypes().setAll(new ButtonType("Oui", ButtonBar.ButtonData.YES), new ButtonType("Non", ButtonBar.ButtonData.NO));
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.YES) {
+                vuePendu.lancePartie();
+                System.out.println("*Voix de forain* C'est reparti pour un tour !");
+            } else {
+                System.out.println("Ok on fait rien chef !");
+            }
+        } else {
             vuePendu.lancePartie();
-            System.out.println("*Voix de forain* C'est reparti pour un tour !");
-        } 
-        else {
-            System.out.println("Ok on fait rien chef !");
-        }
-        }
-        else {
-        vuePendu.lancePartie();
         }
     }
+
 
 }
